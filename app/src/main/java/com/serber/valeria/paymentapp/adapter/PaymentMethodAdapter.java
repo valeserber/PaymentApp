@@ -24,14 +24,14 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
         this.mPaymentList = new ArrayList<>();
     }
 
-    public PaymentMethodAdapter(Context context, List<PaymentMethod> list) {
-        this.mContext = context;
-        this.mPaymentList = list;
-    }
-
     public void addResults(List<PaymentMethod> list) {
         Log.d("lala", String.valueOf(list.size()));
         mPaymentList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        mPaymentList.clear();
         notifyDataSetChanged();
     }
 
