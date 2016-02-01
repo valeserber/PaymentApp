@@ -14,7 +14,7 @@ public enum PaymentType {
         this.type_id = type_id;
     }
 
-    public String getType_id() {
+    public String getTypeId() {
         return type_id;
     }
 }

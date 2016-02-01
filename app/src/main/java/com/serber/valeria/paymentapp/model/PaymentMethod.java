@@ -6,8 +6,8 @@ public class PaymentMethod implements Serializable {
 
     private String id;
     private String name;
-    private PaymentType payment_type_id;
-    private PaymentStatus status;
+    private String payment_type_id;
+    private String status;
     private String secure_thumbnail;
     private String thumbnail;
     private String deferred_capture;
@@ -28,15 +28,15 @@ public class PaymentMethod implements Serializable {
         return name;
     }
 
-    public PaymentType getPayment_type_id() {
+    public String getPaymentTypeId() {
         return payment_type_id;
     }
 
-    public PaymentStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public String getSecure_thumbnail() {
+    public String getSecureThumbnail() {
         return secure_thumbnail;
     }
 
@@ -44,7 +44,7 @@ public class PaymentMethod implements Serializable {
         return thumbnail;
     }
 
-    public String getDeferred_capture() {
+    public String getDeferredCapture() {
         return deferred_capture;
     }
 }

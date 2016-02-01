@@ -2,6 +2,7 @@ package com.serber.valeria.paymentapp.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,12 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
     public PaymentMethodAdapter(Context context, List<PaymentMethod> list) {
         this.mContext = context;
         this.mPaymentList = list;
+    }
+
+    public void addResults(List<PaymentMethod> list) {
+        Log.d("lala", String.valueOf(list.size()));
+        mPaymentList.addAll(list);
+        notifyDataSetChanged();
     }
 
     @Override
