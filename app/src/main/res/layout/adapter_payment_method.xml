@@ -23,12 +23,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:textSize="22sp"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:text="oli"/>
-
+            android:paddingBottom="10dp"/>
     </LinearLayout>
 
     <FrameLayout

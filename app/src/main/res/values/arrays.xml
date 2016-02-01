@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="payment_methods">
+        <item>Tarjetas de Crédito</item>
+        <item>Ticket</item>
+        <item>ATM</item>
+        <item>Tarjetas de Débito</item>
+        <item>Tarjeta prepaga</item>
+    </string-array>
+</resources>
