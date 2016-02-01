@@ -10,22 +10,16 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.serber.valeria.paymentapp.Configuration;
-import com.serber.valeria.paymentapp.PaymentAppApplication;
 import com.serber.valeria.paymentapp.R;
 import com.serber.valeria.paymentapp.adapter.PaymentMethodAdapter;
 import com.serber.valeria.paymentapp.model.PaymentMethod;
 import com.serber.valeria.paymentapp.model.PaymentType;
-import com.serber.valeria.paymentapp.network.NetworkErrors;
+import com.serber.valeria.paymentapp.provider.PaymentMethodProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityView {
 
     RecyclerView mPaymentMethodView;
     ProgressBar mLoadingView;
@@ -33,11 +27,13 @@ public class MainActivity extends AppCompatActivity {
     PaymentMethodAdapter mPaymentAdapter;
     FrameLayout mErrorView;
     TextView mErrorMessage;
+    PaymentMethodProvider mProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setUpLayout();
+        initialize();
         setListeners();
         startLoading();
     }
@@ -53,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
         mPaymentAdapter = new PaymentMethodAdapter(this);
         mPaymentMethodView.setAdapter(mPaymentAdapter);
         mPaymentMethodView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void initialize() {
+        mProvider = new PaymentMethodProvider(this, getBaseContext());
     }
 
     private void setListeners() {
@@ -82,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
         mErrorView.setVisibility(View.GONE);
     }
 
-    private void loadErrorView(String message) {
+    @Override
+    public void loadErrorView(String message) {
         mRefreshView.setRefreshing(false);
         mLoadingView.setVisibility(View.GONE);
         mPaymentMethodView.setVisibility(View.GONE);
@@ -92,39 +93,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadData() {
         clearPreviousResults();
-
-        Call<List<PaymentMethod>> call = PaymentAppApplication.sPaymentMethodService
-                .getPaymentMethods(Configuration.PUBLIC_KEY);
-        call.enqueue(new Callback<List<PaymentMethod>>() {
-            @Override
-            public void onResponse(Response<List<PaymentMethod>> response) {
-                if (response.errorBody() != null) {
-                    int code = response.code();
-                    String error;
-                    if (code == NetworkErrors.HTTP_BAD_REQUEST.getErrorCode()) {
-                        error = NetworkErrors.HTTP_BAD_REQUEST.getErrorType();
-                    } else if (code == NetworkErrors.HTTP_UNAUTHORIZED.getErrorCode()) {
-                        error = NetworkErrors.HTTP_UNAUTHORIZED.getErrorType();
-                    } else if (code == NetworkErrors.HTTP_NOT_FOUND.getErrorCode()) {
-                        error = NetworkErrors.HTTP_NOT_FOUND.getErrorType();
-                    } else {
-                        error = NetworkErrors.UNKNOWN_ERROR.getErrorType();
-                    }
-                    loadErrorView(error);
-                } else {
-                    filterResponse(response.body());
-                }
-            }
-
-
-            @Override
-            public void onFailure(Throwable t) {
-                loadErrorView(getString(R.string.network_error));
-            }
-        });
+        mProvider.getPaymentMethods();
     }
 
-    private void filterResponse(List<PaymentMethod> list) {
+    @Override
+    public void filterResponse(List<PaymentMethod> list) {
         List<PaymentMethod> creditCardList = new ArrayList<>();
         for (PaymentMethod method: list) {
             if (method.getPaymentTypeId().equals(PaymentType.CREDIT_CARD.getTypeId())) {
@@ -134,4 +107,5 @@ public class MainActivity extends AppCompatActivity {
         mPaymentAdapter.addResults(creditCardList);
         finishLoading();
     }
+
 }
