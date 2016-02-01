@@ -20,9 +20,12 @@ public class PaymentMethodProvider {
     private MainActivityView mView;
     private Context mContext;
 
-    public PaymentMethodProvider(MainActivityView view, Context context) {
-        this.mView = view;
+    public PaymentMethodProvider(Context context) {
         this.mContext = context;
+    }
+
+    public void setView(MainActivityView view) {
+        this.mView = view;
     }
 
     public void getPaymentMethods() {
@@ -32,6 +35,7 @@ public class PaymentMethodProvider {
         call.enqueue(new Callback<List<PaymentMethod>>() {
             @Override
             public void onResponse(Response<List<PaymentMethod>> response) {
+                if (mView == null) return;
                 if (response.errorBody() != null) {
                     mView.loadErrorView(getErrorMessage(response.code()));
                 } else {
@@ -41,6 +45,7 @@ public class PaymentMethodProvider {
 
             @Override
             public void onFailure(Throwable t) {
+                if (mView == null) return;
                 mView.loadErrorView(mContext.getString(R.string.network_error));
             }
         });

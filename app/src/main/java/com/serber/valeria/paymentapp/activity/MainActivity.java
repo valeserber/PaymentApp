@@ -21,13 +21,13 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MainActivityView {
 
-    RecyclerView mPaymentMethodView;
-    ProgressBar mLoadingView;
-    SwipeRefreshLayout  mRefreshView;
-    PaymentMethodAdapter mPaymentAdapter;
-    FrameLayout mErrorView;
-    TextView mErrorMessage;
-    PaymentMethodProvider mProvider;
+    private RecyclerView mPaymentMethodView;
+    private ProgressBar mLoadingView;
+    private SwipeRefreshLayout  mRefreshView;
+    private FrameLayout mErrorView;
+    private TextView mErrorMessage;
+    private PaymentMethodAdapter mPaymentAdapter;
+    private PaymentMethodProvider mProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     }
 
     private void initialize() {
-        mProvider = new PaymentMethodProvider(this, getBaseContext());
+        if (mProvider == null) {
+            mProvider = new PaymentMethodProvider(getBaseContext());
+        }
+        mProvider.setView(this);
     }
 
     private void setListeners() {
@@ -108,4 +111,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         finishLoading();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mProvider.setView(null);
+    }
 }
